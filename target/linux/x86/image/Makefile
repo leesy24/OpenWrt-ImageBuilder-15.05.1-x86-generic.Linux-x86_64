@@ -40,8 +40,8 @@ ifneq ($(GRUB_SERIAL),)
     GRUB_CONSOLE_CMDLINE += console=$(GRUB_SERIAL),$(SERIAL_BAUDRATE)n8
     GRUB_SERIAL_CONFIG := serial --unit=0 --speed=$(SERIAL_BAUDRATE) --word=8 --parity=no --stop=1 --rtscts=off
   else
-  GRUB_CONSOLE_CMDLINE += console=$(GRUB_SERIAL),$(CONFIG_GRUB_BAUDRATE)n8
-  GRUB_SERIAL_CONFIG := serial --unit=0 --speed=$(CONFIG_GRUB_BAUDRATE) --word=8 --parity=no --stop=1 --rtscts=off
+    GRUB_CONSOLE_CMDLINE += console=$(GRUB_SERIAL),$(CONFIG_GRUB_BAUDRATE)n8
+    GRUB_SERIAL_CONFIG := serial --unit=0 --speed=$(CONFIG_GRUB_BAUDRATE) --word=8 --parity=no --stop=1 --rtscts=off
   endif
   GRUB_TERMINALS += serial
 endif

@@ -84,7 +84,7 @@ define Profile
 
   PROFILE_NAMES += $(1)
   PROFILE_LIST += \
-  	echo '$(1):'; [ -z '$(NAME)' ] || \
+	echo '$(1):'; [ -z '$(NAME)' ] || \
 	echo '	Name: $(NAME)'; \
 	echo '	Version: $(VERSION)'; \
 	echo '	Packages: $(PACKAGES)'; \
