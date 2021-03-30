@@ -7,7 +7,7 @@
 
 define Profile/DWS4000I
 	NAME:=DWS4000 for Intel
-	VERSION:=v4.33
+	VERSION:=v4.34
 	PACKAGES:= \
 		avahi-daemon-service-http avahi-daemon-service-ssh avahi-nodbus-daemon \
 		bc \
