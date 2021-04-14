@@ -7,7 +7,7 @@
 
 define Profile/DWB4054I
 	NAME:=DWB4054 for Intel
-	VERSION:=v6.2
+	VERSION:=v6.3
 	PACKAGES:= \
 		avahi-daemon-service-http avahi-daemon-service-ssh avahi-nodbus-daemon \
 		-dnsmasq \
