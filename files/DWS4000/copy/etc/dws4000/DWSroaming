@@ -241,7 +241,7 @@ while : ; do
 			# Check return value of change_freq() OK
 			if [ $? -eq 0 ]; then
 				# Check SNR
-			actSNR=$(get_actSNR)  ##!!
+				actSNR=$(get_actSNR)  ##!!
 				if [ $actSNR -gt $SNRmin  ] ; then
 					log "SNR $actSNR OK"
 					break  ## exit while loop --->
