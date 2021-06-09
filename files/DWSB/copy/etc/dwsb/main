@@ -4,22 +4,239 @@
 ##
 . common
 
-while : ; do
+DUAL_STA_ROAMING_CONFIG_org="/etc/dwsb/dual_sta_roaming.cfg"
+DUAL_STA_ROAMING_CONFIG_tmp="/tmp/dual_sta_roaming.cfg"
+CH_ROAMING_0_CONFIG_org="/etc/dwsb/channel_roaming_0.cfg"
+CH_ROAMING_0_CONFIG_tmp="/tmp/channel_roaming_0.cfg"
+CH_ROAMING_1_CONFIG_org="/etc/dwsb/channel_roaming_1.cfg"
+CH_ROAMING_1_CONFIG_tmp="/tmp/channel_roaming_1.cfg"
+LNKI_CHECKING_0_CONFIG_org="/etc/dwsb/link_int_checking_0.cfg"
+LNKI_CHECKING_0_CONFIG_tmp="/tmp/link_int_checking_0.cfg"
+LNKI_CHECKING_1_CONFIG_org="/etc/dwsb/link_int_checking_1.cfg"
+LNKI_CHECKING_1_CONFIG_tmp="/tmp/link_int_checking_1.cfg"
 
-	readSystem
-	readNetwork
+init_config_org
+
+default_item=""
+
+while : ; do
 
 	inputvar=""
 
-	menuinput "Status Overview" \
-		'"ReviewStatus"  "Review Status .... Enter!"
-		"1SystemConfig"     ">> Host Name & Date time __________Configure <<"
-		"2LanConfig"        ">> LAN Network ____________________Configure <<"
-		"3FirstWiFiConfig"  ">> 1st Wireless Network ___________Configure <<"
-		"4SecondWiFiConfig" ">> 2nd Wireless Network ___________Configure <<"
-		"5SaveCommit"    "Commit All Configure Save!"
-		"6SaveReboot"    "Save(commit) & ReBOOT....!"
-		"7JustREBOOT"	 "==============>ReBOOT....!"'
+	readNewOrg_Wifi 0
+	cWstat_0=$cWstat
+	cWmode_0=$cWmode
+	readNewOrg_Wifi 1
+	cWstat_1=$cWstat
+	cWmode_1=$cWmode
+
+	if ([ "$cWstat_0" = "Disable" ] && [ "$cWstat_1" = "Disable" ]); then
+		menuinput "Status Overview" \
+			'"ReviewStatus"       "Review Status .... Enter!"
+			"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+			"2LanConfig"          ">> LAN Network ____________________Configure <<"
+			"3FirstWiFiConfig"    ">> 1st Wireless Network (Disable) _Configure <<"
+			"4SecondWiFiConfig"   ">> 2nd Wireless Network (Disable) _Configure <<"
+			"5SaveCommit"         "Commit All Configure Save!"
+			"6SaveReboot"         "Save(commit) & ReBOOT....!"
+			"7ustREBOOT"         "==============>ReBOOT....!"' \
+			"$default_item"
+	elif ([ "$cWstat_0" != "Disable" ] && [ "$cWstat_1" = "Disable" ]); then
+		if [ "$cWmode_0" = "sta" ]; then
+			menuinput "Status Overview" \
+				'"ReviewStatus"       "Review Status .... Enter!"
+				"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+				"2LanConfig"          ">> LAN Network ____________________Configure <<"
+				"3FirstWiFiConfig"    ">> 1st Wireless Network (Station) _Configure <<"
+				"4SecondWiFiConfig"   ">> 2nd Wireless Network (Disable) _Configure <<"
+				"5ChRoamFirstConfig"  ">> Channel Roaming 1st Station ____Configure <<"
+				"6SaveCommit"         "Commit All Configure Save!"
+				"7SaveReboot"         "Save(commit) & ReBOOT....!"
+				"8JustREBOOT"         "==============>ReBOOT....!"' \
+				"$default_item"
+		elif [ "$cWmode_0" = "ap" ]; then
+			menuinput "Status Overview" \
+				'"ReviewStatus"       "Review Status .... Enter!"
+				"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+				"2LanConfig"          ">> LAN Network ____________________Configure <<"
+				"3FirstWiFiConfig"    ">> 1st Wireless Network (AP) ______Configure <<"
+				"4SecondWiFiConfig"   ">> 2nd Wireless Network (Disable) _Configure <<"
+				"5LnkICFirstConfig"   ">> Link Integrity Checking 1st AP _Configure <<"
+				"6SaveCommit"         "Commit All Configure Save!"
+				"7SaveReboot"         "Save(commit) & ReBOOT....!"
+				"8JustREBOOT"         "==============>ReBOOT....!"' \
+				"$default_item"
+		else
+			menuinput "Status Overview" \
+				'"ReviewStatus"       "Review Status .... Enter!"
+				"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+				"2LanConfig"          ">> LAN Network ____________________Configure <<"
+				"3FirstWiFiConfig"    ">> 1st Wireless Network (Unknown) _Configure <<"
+				"4SecondWiFiConfig"   ">> 2nd Wireless Network (Disable) _Configure <<"
+				"5SaveCommit"         "Commit All Configure Save!"
+				"6SaveReboot"         "Save(commit) & ReBOOT....!"
+				"7JustREBOOT"         "==============>ReBOOT....!"' \
+				"$default_item"
+		fi
+	elif ([ "$cWstat_0" = "Disable" ] && [ "$cWstat_1" != "Disable" ]); then
+		if [ "$cWmode_1" = "sta" ]; then
+			menuinput "Status Overview" \
+				'"ReviewStatus"       "Review Status .... Enter!"
+				"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+				"2LanConfig"          ">> LAN Network ____________________Configure <<"
+				"3FirstWiFiConfig"    ">> 1st Wireless Network (Disable) _Configure <<"
+				"4SecondWiFiConfig"   ">> 2nd Wireless Network (Station) _Configure <<"
+				"5ChRoamSecondConfig" ">> Channel Roaming 2nd Station ____Configure <<"
+				"6SaveCommit"         "Commit All Configure Save!"
+				"7SaveReboot"         "Save(commit) & ReBOOT....!"
+				"8JustREBOOT"         "==============>ReBOOT....!"' \
+				"$default_item"
+		elif [ "$cWmode_1" = "ap" ]; then
+			menuinput "Status Overview" \
+				'"ReviewStatus"       "Review Status .... Enter!"
+				"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+				"2LanConfig"          ">> LAN Network ____________________Configure <<"
+				"3FirstWiFiConfig"    ">> 1st Wireless Network (Disable) _Configure <<"
+				"4SecondWiFiConfig"   ">> 2nd Wireless Network (AP) ______Configure <<"
+				"5LnkICSecondConfig"  ">> Link Integrity Checking 2nd AP _Configure <<"
+				"6SaveCommit"         "Commit All Configure Save!"
+				"7SaveReboot"         "Save(commit) & ReBOOT....!"
+				"8JustREBOOT"         "==============>ReBOOT....!"' \
+				"$default_item"
+		else
+			menuinput "Status Overview" \
+				'"ReviewStatus"       "Review Status .... Enter!"
+				"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+				"2LanConfig"          ">> LAN Network ____________________Configure <<"
+				"3FirstWiFiConfig"    ">> 1st Wireless Network (Disable) _Configure <<"
+				"4SecondWiFiConfig"   ">> 2nd Wireless Network (Unknown) _Configure <<"
+				"5SaveCommit"         "Commit All Configure Save!"
+				"6SaveReboot"         "Save(commit) & ReBOOT....!"
+				"7JustREBOOT"         "==============>ReBOOT....!"' \
+				"$default_item"
+		fi
+	elif ([ "$cWstat_0" != "Disable" ] && [ "$cWstat_1" != "Disable" ]); then
+		if [ "$cWmode_0" = "sta" ]; then
+			if [ "$cWmode_1" = "sta" ]; then
+				menuinput "Status Overview" \
+					'"ReviewStatus"       "Review Status .... Enter!"
+					"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+					"2LanConfig"          ">> LAN Network ____________________Configure <<"
+					"3FirstWiFiConfig"    ">> 1st Wireless Network (Station) _Configure <<"
+					"4SecondWiFiConfig"   ">> 2nd Wireless Network (Station) _Configure <<"
+					"5ChRoamFirstConfig"  ">> Channel Roaming 1st Station ____Configure <<"
+					"6ChRoamSecondConfig" ">> Channel Roaming 2nd Station ____Configure <<"
+					"7DualStaRoamConfig"  ">> Dual-Station Roaming ___________Configure <<"
+					"8SaveCommit"         "Commit All Configure Save!"
+					"9SaveReboot"         "Save(commit) & ReBOOT....!"
+					"0JustREBOOT"         "==============>ReBOOT....!"' \
+					"$default_item"
+			elif [ "$cWmode_1" = "ap" ]; then
+				menuinput "Status Overview" \
+					'"ReviewStatus"       "Review Status .... Enter!"
+					"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+					"2LanConfig"          ">> LAN Network ____________________Configure <<"
+					"3FirstWiFiConfig"    ">> 1st Wireless Network (Station) _Configure <<"
+					"4SecondWiFiConfig"   ">> 2nd Wireless Network (AP) ______Configure <<"
+					"5ChRoamFirstConfig"  ">> Channel Roaming 1st Station ____Configure <<"
+					"6LnkICSecondConfig"  ">> Link Integrity Checking 2nd AP _Configure <<"
+					"7SaveCommit"         "Commit All Configure Save!"
+					"8SaveReboot"         "Save(commit) & ReBOOT....!"
+					"9JustREBOOT"         "==============>ReBOOT....!"' \
+					"$default_item"
+			else
+				menuinput "Status Overview" \
+					'"ReviewStatus"       "Review Status .... Enter!"
+					"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+					"2LanConfig"          ">> LAN Network ____________________Configure <<"
+					"3FirstWiFiConfig"    ">> 1st Wireless Network (Station) _Configure <<"
+					"4SecondWiFiConfig"   ">> 2nd Wireless Network (Unknown) _Configure <<"
+					"5ChRoamFirstConfig"  ">> Channel Roaming 1st Station ____Configure <<"
+					"6SaveCommit"         "Commit All Configure Save!"
+					"7SaveReboot"         "Save(commit) & ReBOOT....!"
+					"8JustREBOOT"         "==============>ReBOOT....!"' \
+					"$default_item"
+			fi
+		elif [ "$cWmode_0" = "ap" ]; then
+			if [ "$cWmode_1" = "sta" ]; then
+				menuinput "Status Overview" \
+					'"ReviewStatus"       "Review Status .... Enter!"
+					"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+					"2LanConfig"          ">> LAN Network ____________________Configure <<"
+					"3FirstWiFiConfig"    ">> 1st Wireless Network (AP) ______Configure <<"
+					"4SecondWiFiConfig"   ">> 2nd Wireless Network (Station) _Configure <<"
+					"5LnkICFirstConfig"   ">> Link Integrity Checking 1st AP _Configure <<"
+					"6ChRoamSecondConfig" ">> Channel Roaming 2nd Station ____Configure <<"
+					"7SaveCommit"         "Commit All Configure Save!"
+					"8SaveReboot"         "Save(commit) & ReBOOT....!"
+					"9JustREBOOT"         "==============>ReBOOT....!"' \
+					"$default_item"
+			elif [ "$cWmode_1" = "ap" ]; then
+				menuinput "Status Overview" \
+					'"ReviewStatus"       "Review Status .... Enter!"
+					"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+					"2LanConfig"          ">> LAN Network ____________________Configure <<"
+					"3FirstWiFiConfig"    ">> 1st Wireless Network (AP) ______Configure <<"
+					"4SecondWiFiConfig"   ">> 2nd Wireless Network (AP) ______Configure <<"
+					"5LnkICFirstConfig"   ">> Link Integrity Checking 1st AP _Configure <<"
+					"6LnkICSecondConfig"  ">> Link Integrity Checking 2nd AP _Configure <<"
+					"7SaveCommit"         "Commit All Configure Save!"
+					"8SaveReboot"         "Save(commit) & ReBOOT....!"
+					"9JustREBOOT"         "==============>ReBOOT....!"' \
+					"$default_item"
+			else
+				menuinput "Status Overview" \
+					'"ReviewStatus"       "Review Status .... Enter!"
+					"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+					"2LanConfig"          ">> LAN Network ____________________Configure <<"
+					"3FirstWiFiConfig"    ">> 1st Wireless Network (AP) ______Configure <<"
+					"4SecondWiFiConfig"   ">> 2nd Wireless Network (Unknown) _Configure <<"
+					"5SaveCommit"         "Commit All Configure Save!"
+					"6SaveReboot"         "Save(commit) & ReBOOT....!"
+					"7JustREBOOT"         "==============>ReBOOT....!"' \
+					"$default_item"
+			fi
+		else
+			if [ "$cWmode_1" = "sta" ]; then
+				menuinput "Status Overview" \
+					'"ReviewStatus"       "Review Status .... Enter!"
+					"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+					"2LanConfig"          ">> LAN Network ____________________Configure <<"
+					"3FirstWiFiConfig"    ">> 1st Wireless Network (Unknown) _Configure <<"
+					"4SecondWiFiConfig"   ">> 2nd Wireless Network (Station) _Configure <<"
+					"5ChRoamSecondConfig" ">> Channel Roaming 2nd Station ____Configure <<"
+					"6SaveCommit"         "Commit All Configure Save!"
+					"7SaveReboot"         "Save(commit) & ReBOOT....!"
+					"8JustREBOOT"         "==============>ReBOOT....!"' \
+					"$default_item"
+			elif [ "$cWmode_1" = "ap" ]; then
+				menuinput "Status Overview" \
+					'"ReviewStatus"       "Review Status .... Enter!"
+					"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+					"2LanConfig"          ">> LAN Network ____________________Configure <<"
+					"3FirstWiFiConfig"    ">> 1st Wireless Network (Unknown) _Configure <<"
+					"4SecondWiFiConfig"   ">> 2nd Wireless Network (AP) ______Configure <<"
+					"5LnkICSecondConfig"  ">> Link Integrity Checking 2nd AP _Configure <<"
+					"6SaveCommit"         "Commit All Configure Save!"
+					"7SaveReboot"         "Save(commit) & ReBOOT....!"
+					"8JustREBOOT"         "==============>ReBOOT....!"' \
+					"$default_item"
+			else
+				menuinput "Status Overview" \
+					'"ReviewStatus"       "Review Status .... Enter!"
+					"1SystemConfig"       ">> Host Name & Date time __________Configure <<"
+					"2LanConfig"          ">> LAN Network ____________________Configure <<"
+					"3FirstWiFiConfig"    ">> 1st Wireless Network (Unknown) _Configure <<"
+					"4SecondWiFiConfig"   ">> 2nd Wireless Network (Unknown) _Configure <<"
+					"5SaveCommit"         "Commit All Configure Save!"
+					"6SaveReboot"         "Save(commit) & ReBOOT....!"
+					"7JustREBOOT"         "==============>ReBOOT....!"' \
+					"$default_item"
+			fi
+		fi
+	fi
+
+	default_item=$inputvar
 
 	case $inputvar in
 
@@ -42,33 +259,92 @@ while : ; do
 		/etc/dwsb/net_wifi 1
 		;;
 
-	5SaveCommit)
+	5LnkICFirstConfig)
+		/etc/dwsb/link_int_checking 0
+		;;
+
+	5LnkICSecondConfig | 6LnkICSecondConfig)
+		/etc/dwsb/link_int_checking 1
+		;;
+
+	5ChRoamFirstConfig)
+		/etc/dwsb/channel_roaming 0
+		;;
+
+	5ChRoamSecondConfig | 6ChRoamSecondConfig)
+		/etc/dwsb/channel_roaming 1
+		;;
+
+	7DualStaRoamConfig)
+		/etc/dwsb/dual_sta_roaming
+		;;
+
+	5SaveCommit | 6SaveCommit | 7SaveCommit | 8SaveCommit)
 		textinput \
 			 "Commit All Configures & Save Now?? [Yes/No]\n\n"$(
 			)"Please Enter:\n"$(
 			)" [YES]/[no] \n" \
 			"NO"
 		if [ "$inputvar" = "YES" ] ; then
+			/etc/init.d/dwsbLCD stop 2>/dev/null
+			/etc/init.d/dwsbDualStaRoaming stop 2>/dev/null
+			/etc/init.d/dwsbChRoaming_1 stop 2>/dev/null
+			/etc/init.d/dwsbChRoaming_0 stop 2>/dev/null
+			/etc/init.d/dwsbLnkIChecking_0 stop 2>/dev/null
+			/etc/init.d/dwsbLnkIChecking_1 stop 2>/dev/null
+
 			clear
-			echo ; echo "[$cHostname].... Commit All Configures Save Now!!"
+			echo ; echo "[$aHostname].... Commit All Configures Save Now!!"
+			[ -f $DUAL_STA_ROAMING_CONFIG_tmp ] && mv $DUAL_STA_ROAMING_CONFIG_tmp $DUAL_STA_ROAMING_CONFIG_org
+			[ -f $CH_ROAMING_0_CONFIG_tmp ] && mv $CH_ROAMING_0_CONFIG_tmp $CH_ROAMING_0_CONFIG_org
+			[ -f $CH_ROAMING_1_CONFIG_tmp ] && mv $CH_ROAMING_1_CONFIG_tmp $CH_ROAMING_1_CONFIG_org
+			[ -f $LNKI_CHECKING_0_CONFIG_tmp ] && mv $LNKI_CHECKING_0_CONFIG_tmp $LNKI_CHECKING_0_CONFIG_org
+			[ -f $LNKI_CHECKING_1_CONFIG_tmp ] && mv $LNKI_CHECKING_1_CONFIG_tmp $LNKI_CHECKING_1_CONFIG_org
+			apply_config_new_4_commit
+			clean_config_new
 			uci commit
-			echo ; echo "[$cHostname].... Restart Network Subsystem ...!!"
+			init_config_org
+
+			echo ; echo "[$aHostname].... Restart Network Subsystem ...!!"
 			/etc/init.d/network restart
-			sleep 10
+			sleep 5
+
+			/etc/init.d/dwsbLnkIChecking_0 start 2>/dev/null
+			/etc/init.d/dwsbLnkIChecking_1 start 2>/dev/null
+			/etc/init.d/dwsbChRoaming_0 start 2>/dev/null
+			/etc/init.d/dwsbChRoaming_1 start 2>/dev/null
+			/etc/init.d/dwsbDualStaRoaming start 2>/dev/null
+			/etc/init.d/dwsbLCD start 2>/dev/null
+			sleep 5
 		fi
 		;;
 
-	6SaveReboot)
+	6SaveReboot | 7SaveReboot | 8SaveReboot | 9SaveReboot)
 		textinput \
 			 "Commit All Configures & ReBOOT Now?? [Yes/No]\n\n"$(
 			)"Please Enter:\n"$(
 			)" [YES]/[no]\n" \
 			"NO"
 		if [ "$inputvar" = "YES" ] ; then
+			/etc/init.d/dwsbLCD stop 2>/dev/null
+			/etc/init.d/dwsbDualStaRoaming stop 2>/dev/null
+			/etc/init.d/dwsbChRoaming_1 stop 2>/dev/null
+			/etc/init.d/dwsbChRoaming_0 stop 2>/dev/null
+			/etc/init.d/dwsbLnkIChecking_0 stop 2>/dev/null
+			/etc/init.d/dwsbLnkIChecking_1 stop 2>/dev/null
+
 			clear
-			echo ; echo "[$cHostname].... Commit All Configures Now!!"
+			echo ; echo "[$aHostname].... Commit All Configures Now!!"
+			[ -f $DUAL_STA_ROAMING_CONFIG_tmp ] && mv $DUAL_STA_ROAMING_CONFIG_tmp $DUAL_STA_ROAMING_CONFIG_org
+			[ -f $CH_ROAMING_0_CONFIG_tmp ] && mv $CH_ROAMING_0_CONFIG_tmp $CH_ROAMING_0_CONFIG_org
+			[ -f $CH_ROAMING_1_CONFIG_tmp ] && mv $CH_ROAMING_1_CONFIG_tmp $CH_ROAMING_1_CONFIG_org
+			[ -f $LNKI_CHECKING_0_CONFIG_tmp ] && mv $LNKI_CHECKING_0_CONFIG_tmp $LNKI_CHECKING_0_CONFIG_org
+			[ -f $LNKI_CHECKING_1_CONFIG_tmp ] && mv $LNKI_CHECKING_1_CONFIG_tmp $LNKI_CHECKING_1_CONFIG_org
+			apply_config_new_4_commit
+			clean_config_new
 			uci commit
-			echo ; echo "[$cHostname].... System Reboot Now!!"
+
+			echo ; echo "[$aHostname].... System Reboot Now!!"
 			reboot
 			while : ; do
 				sleep 1
@@ -77,7 +353,7 @@ while : ; do
 		fi
 		;;
 
-	7JustREBOOT)
+	7JustREBOOT | 8JustREBOOT | 9JustREBOOT | 0JustREBOOT)
 		textinput \
 			 "===============> ReBOOT Now?? [Yes/No]\n\n"$(
 			)"Please Enter:\n"$(
@@ -85,7 +361,7 @@ while : ; do
 			"NO"
 		if [ "$inputvar" = "YES" ] ; then
 		  clear
-		  echo ; echo "[$cHostname].... System Reboot Now!!"
+		  echo ; echo "[$aHostname].... System Reboot Now!!"
 		  reboot -f
 		  while : ; do
 			sleep 1

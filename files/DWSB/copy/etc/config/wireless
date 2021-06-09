@@ -2,7 +2,7 @@
 config wifi-device 'radio0'
         option type 'mac80211'
         option hwmode '11g'
-        option path 'pci0000:00/0000:00:0c.0'
+        option path 'pci0000:00/0000:00:1e.0/0000:03:03.0'
         option country 'KR'
         option htmode 'HT40'
         option channel 'auto'
@@ -15,11 +15,12 @@ config wifi-iface
         option ssid 'AP01'
         option encryption 'none'
 	option wds '1'
+        option disabled '1'
 
 config wifi-device 'radio1'
         option type 'mac80211'
         option hwmode '11g'
-        option path 'pci0000:00/0000:00:0e.0'
+        option path 'pci0000:00/0000:00:1e.0/0000:03:04.0'
         option country 'KR'
         option htmode 'HT40'
         option channel 'auto'
@@ -34,5 +35,6 @@ config wifi-iface
         option key '1'
         option key1 's:string13chars'
 	option wds '1'
+        option disabled '1'
 
 

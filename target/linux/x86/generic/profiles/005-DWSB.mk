@@ -10,6 +10,7 @@ define Profile/DWSBI
 	VERSION:=v1.10
 	PACKAGES:= \
 		avahi-daemon-service-http avahi-daemon-service-ssh avahi-nodbus-daemon \
+		bc \
 		-dnsmasq \
 		-dosfsck -dosfslabel \
 		e2fsprogs \
@@ -52,6 +53,7 @@ define Profile/DWSBI
 		lftp \
 		libiwinfo-lua \
 		libncurses \
+		lm-sensors \
 		luci-base luci-mod-admin-full luci-theme-bootstrap \
 		-mkdosfs \
 		-odhcp6c -odhcpd \
