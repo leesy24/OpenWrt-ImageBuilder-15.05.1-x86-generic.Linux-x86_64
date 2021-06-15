@@ -7,7 +7,7 @@
 
 define Profile/DWSBI
 	NAME:=DWSB for Intel
-	VERSION:=v1.10
+	VERSION:=v1.41
 	PACKAGES:= \
 		avahi-daemon-service-http avahi-daemon-service-ssh avahi-nodbus-daemon \
 		bc \
